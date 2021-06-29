@@ -29,7 +29,7 @@ def chart(args, data):
     ax1.plot(t, debit, label='Bandwidth(Mbps)')
     ax1.axhline(data['end'][sum_string]['bits_per_second']/10**6, color='r', label='Avg bandwidth')
     ax1.axhline(expected_bandwidth, color='g', label='Expected bandwidth')
-    ax1.legend(loc=4)
+    ax1.legend(loc=0)
     plt.title('[{}] {}'.format(
         data['end']['sender_tcp_congestion'],
         datetime.now().strftime('%Y-%m-%d %H:%M')))
@@ -51,7 +51,8 @@ def chart(args, data):
     ax2 = ax1.twinx()
     ax2.set_ylabel('RTT(ms)')
     ax2.plot(t, rtts, color='b', linestyle='dashed', label='RTT')
-    fig.legend(loc=4)
+    fig.legend(loc='upper left')
+    plt.subplots_adjust(right=0.85)
     plt.savefig(filename+'-with-rtts.pdf')
 
 def main(argv):
