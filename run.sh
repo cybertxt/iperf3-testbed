@@ -7,16 +7,19 @@ if [ -z $TEST_DURATION ]; then
 fi
 
 TARGET_HOST='10.10.61.58'
+LOCAL_HOST='10.10.28.7'
 
 echo "Begin pulling data from $TARGET_HOST for ${TEST_DURATION}s by using CCA ${CCA}..."
 
 CCA_SAVE=`ssh root@${TARGET_HOST} "cat /proc/sys/net/ipv4/tcp_congestion_control"`
 ## Start iperf server
 ssh root@${TARGET_HOST} "echo $CCA > /proc/sys/net/ipv4/tcp_congestion_control; iperf3 -sD1"
+#iperf3 -sD1
 ## Start ping to record the round-trip-latency
 ping -c ${TEST_DURATION} ${TARGET_HOST} > ping.log&
 ## Do test
-iperf3 -c ${TARGET_HOST} -R -J -t ${TEST_DURATION} > iperf3.json
+#ssh root@${TARGET_HOST} "echo $CCA > /proc/sys/net/ipv4/tcp_congestion_control; iperf3 -c ${LOCAL_HOST} -J -t ${TEST_DURATION}" > iperf3.json
+iperf3 -c ${TARGET_HOST} -J -R -t ${TEST_DURATION} > iperf3.json
 ## Restore the CCA setting
 ssh root@${TARGET_HOST} "echo $CCA_SAVE > /proc/sys/net/ipv4/tcp_congestion_control"
 ## Process the result
